@@ -18,7 +18,11 @@ package:
     - .git/**
 
 functions:
-  first:
-    handler: Hello
+  getProblems:
+    handler: GetProblems
     events:
-      - http: /hello
+      - http: /
+  getProblemContent:
+    handler: GetProblemContent
+    events:
+      - http: /
