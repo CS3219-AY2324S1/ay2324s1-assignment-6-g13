@@ -22,7 +22,3 @@ functions:
     handler: GetProblems
     events:
       - http: /
-  getProblemContent:
-    handler: GetProblemContent
-    events:
-      - http: /

@@ -2,25 +2,64 @@ package hello
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/dustyRAIN/leetcode-api-go/leetcodeapi"
 )
 
-func Hello(w http.ResponseWriter, r *http.Request) {
-	name := r.URL.Query().Get("name")
-	if name == "" {
-		name = "someone"
-	}
-	fmt.Fprintf(w, "Hello, %s!", name)
+type Problem struct {
+	Difficulty string
+	QuestionId string
+	Title      string
+	TitleSlug  string
+	Content    string
+	TopicTag   []string
 }
 
 func GetProblems(w http.ResponseWriter, r *http.Request) {
-	allProblemList, _ := leetcodeapi.GetAllProblems(0, 50)
-	jsonData, err := json.Marshal(allProblemList.Problems)
+	queryParams := r.URL.Query()
+	offsetString := queryParams.Get("offset")
+	pageSizeString := queryParams.Get("page-size")
+	offset, err := strconv.Atoi(offsetString)
 	if err != nil {
-		fmt.Println("Error:", err)
+		http.Error(w, "Invalid Query Parameters: offset", http.StatusBadRequest)
+	}
+	pageSize, err := strconv.Atoi(pageSizeString)
+	if err != nil {
+		http.Error(w, "Invalid Query Parameters: page-size", http.StatusBadRequest)
+	}
+	var problems []Problem
+	allProblemList, err := leetcodeapi.GetAllProblems(offset, pageSize)
+	if err != nil {
+		http.Error(w, "Failed to Connect to Leetcode API", http.StatusInternalServerError)
+		return
+	}
+	for _, value := range allProblemList.Problems {
+		var topicTags []string
+		titleSlug := value.TitleSlug
+		content, err := leetcodeapi.GetProblemContentByTitleSlug(titleSlug)
+		if err != nil {
+			http.Error(w, "Failed to Connect to Leetcode API", http.StatusInternalServerError)
+			return
+		}
+		for _, value := range value.TopicTags {
+			topicTags = append(topicTags, value.Name)
+		}
+		problem := Problem{
+			Title:      value.Title,
+			TitleSlug:  value.TitleSlug,
+			Difficulty: value.Difficulty,
+			QuestionId: value.QuestionId,
+			TopicTag:   topicTags,
+			Content:    content.Content,
+		}
+		problems = append(problems, problem)
+	}
+
+	jsonData, err := json.Marshal(problems)
+	if err != nil {
+		http.Error(w, "Failed to Encode JSON", http.StatusInternalServerError)
 		return
 	}
 
@@ -30,15 +69,4 @@ func GetProblems(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to write response", http.StatusInternalServerError)
 		return
 	}
-}
-
-func GetProblemContent(w http.ResponseWriter, r *http.Request) {
-	queryParam := r.URL.Query()
-	titleSlug := queryParam.Get("title-slug")
-	problemContent, err := leetcodeapi.GetProblemContentByTitleSlug(titleSlug)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Fprintln(w, problemContent)
 }
