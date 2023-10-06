@@ -14,7 +14,7 @@ type Problem struct {
 	Title      string
 	TitleSlug  string
 	Content    string
-	TopicTag   []string
+	Category   []string
 }
 
 func GetProblems(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +36,7 @@ func GetProblems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for _, value := range allProblemList.Problems {
-		var topicTags []string
+		var categories []string
 		titleSlug := value.TitleSlug
 		content, err := leetcodeapi.GetProblemContentByTitleSlug(titleSlug)
 		if err != nil {
@@ -44,28 +44,24 @@ func GetProblems(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for _, value := range value.TopicTags {
-			topicTags = append(topicTags, value.Name)
+			categories = append(categories, value.Name)
 		}
 		problem := Problem{
 			Title:      value.Title,
 			TitleSlug:  value.TitleSlug,
 			Difficulty: value.Difficulty,
 			QuestionId: value.QuestionId,
-			TopicTag:   topicTags,
+			Category:   categories,
 			Content:    content.Content,
 		}
 		problems = append(problems, problem)
 	}
 
-	jsonData, err := json.Marshal(problems)
-	if err != nil {
-		http.Error(w, "Failed to Encode JSON", http.StatusInternalServerError)
-		return
-	}
+	encoder := json.NewEncoder(w)
+	encoder.SetEscapeHTML(false)
 
 	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonData)
-	if err != nil {
+	if err := encoder.Encode(problems); err != nil {
 		http.Error(w, "Failed to write response", http.StatusInternalServerError)
 		return
 	}
