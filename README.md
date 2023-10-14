@@ -1,4 +1,6 @@
-# Leetcode Questions Serverless API 
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/UxpU_KWG)
+
+# ServerlessTemplate# Leetcode Questions Serverless API 
 This is a serverless function deployed on GCP Cloud Function.
 The purpose of this function is to fetch Leetcode questions together with the questions content. 
 
@@ -21,4 +23,4 @@ https://asia-southeast1-peer-preps-assignment6.cloudfunctions.net/ay2324s1-asses
 ```
 FUNCTION_TARGET=GetProblems LOCAL_ONLY=true go run cmd/main.go
 ```
-3. Open your browser and go to `localhost:8080?offset={OFFSET}&page-size={PAGE SIZE}`
+3. Open your browser and go to `loca
