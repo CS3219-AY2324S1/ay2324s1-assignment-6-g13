@@ -1,28 +1,24 @@
-package hello
+package leetcode
 
 import (
 	"encoding/json"
 	"net/http"
 	"strconv"
 
-	"github.com/dustyRAIN/leetcode-api-go/leetcodeapi"
+	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
+	"peerprep.assignment6/leetcode"
 )
 
 type Response struct {
-	Total    int       `json:"total"`
-	Problems []Problem `json:"problems"`
+	Total    int                `json:"total"`
+	Problems []leetcode.Problem `json:"problems"`
 }
 
-type Problem struct {
-	Difficulty string
-	QuestionId string
-	Title      string
-	TitleSlug  string
-	Content    string
-	Category   []string
+func init() {
+	functions.HTTP("GetProblems", getProblems)
 }
 
-func GetProblems(w http.ResponseWriter, r *http.Request) {
+func getProblems(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	offsetString := queryParams.Get("offset")
 	pageSizeString := queryParams.Get("page-size")
@@ -34,36 +30,13 @@ func GetProblems(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Invalid Query Parameters: page-size", http.StatusBadRequest)
 	}
-	var problems []Problem
-	allProblemList, err := leetcodeapi.GetAllProblems(offset, pageSize)
-	if err != nil {
-		http.Error(w, "Failed to Connect to Leetcode API", http.StatusInternalServerError)
-		return
+
+	problemList, totalNumberOfQuestion, errorMessage, httpStatusCode := leetcode.GetAllProblems(offset, pageSize)
+	if httpStatusCode != http.StatusOK {
+		http.Error(w, errorMessage, httpStatusCode)
 	}
 
-	totalNumberOfQuestion := allProblemList.Total
-
-	for _, value := range allProblemList.Problems {
-		var categories []string
-		titleSlug := value.TitleSlug
-		content, err := leetcodeapi.GetProblemContentByTitleSlug(titleSlug)
-		if err != nil {
-			http.Error(w, "Failed to Connect to Leetcode API", http.StatusInternalServerError)
-			return
-		}
-		for _, value := range value.TopicTags {
-			categories = append(categories, value.Name)
-		}
-		problem := Problem{
-			Title:      value.Title,
-			TitleSlug:  value.TitleSlug,
-			Difficulty: value.Difficulty,
-			QuestionId: value.QuestionId,
-			Category:   categories,
-			Content:    content.Content,
-		}
-		problems = append(problems, problem)
-	}
+	problems, errorMessage, httpStatusCode := leetcode.GetAllProblemsWithContent(problemList)
 
 	encoder := json.NewEncoder(w)
 	encoder.SetEscapeHTML(false)
