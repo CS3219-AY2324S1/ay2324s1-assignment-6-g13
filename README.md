@@ -1,6 +1,6 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/UxpU_KWG)
 
-# ServerlessTemplate# Leetcode Questions Serverless API 
+# Leetcode Questions Serverless API 
 This is a serverless function deployed on GCP Cloud Function.
 The purpose of this function is to fetch Leetcode questions together with the questions content. 
 
