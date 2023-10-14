@@ -8,6 +8,11 @@ import (
 	"github.com/dustyRAIN/leetcode-api-go/leetcodeapi"
 )
 
+type Response struct {
+	Total    int       `json:"total"`
+	Problems []Problem `json:"problems"`
+}
+
 type Problem struct {
 	Difficulty string
 	QuestionId string
@@ -35,6 +40,9 @@ func GetProblems(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to Connect to Leetcode API", http.StatusInternalServerError)
 		return
 	}
+
+	totalNumberOfQuestion := allProblemList.Total
+
 	for _, value := range allProblemList.Problems {
 		var categories []string
 		titleSlug := value.TitleSlug
@@ -60,8 +68,13 @@ func GetProblems(w http.ResponseWriter, r *http.Request) {
 	encoder := json.NewEncoder(w)
 	encoder.SetEscapeHTML(false)
 
+	response := Response{
+		Total:    totalNumberOfQuestion,
+		Problems: problems,
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	if err := encoder.Encode(problems); err != nil {
+	if err := encoder.Encode(response); err != nil {
 		http.Error(w, "Failed to write response", http.StatusInternalServerError)
 		return
 	}
