@@ -15,7 +15,7 @@ https://asia-southeast1-peer-preps-assignment6.cloudfunctions.net/GetProblems?of
 
 ## How to develop locally?
 1. Clone this repo to your local device
-2. Run `yarn install` or `npm install` to install all the necessary dependencies
+2. Start editing straight away
 
 ### How to test development locally?
 1. Need to use a Unix terminal like `bash`
@@ -25,4 +25,4 @@ FUNCTION_TARGET=GetProblems LOCAL_ONLY=true go run cmd/main.go
 ```
 3. Open your browser and go to `localhost:8080?offset={OFFSET}&page-size={PAGE SIZE}
 
-*Look up [GCP Cloud Function Framework](https://github.com/GoogleCloudPlatform/functions-framework-go) for more information*
+*Look up [GCP Cloud Function Framework](https://github.com/GoogleCloudPlatform/functions-framework-go) for more information on local testing*
