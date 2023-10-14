@@ -10,7 +10,7 @@ The purpose of this function is to fetch Leetcode questions together with the qu
     - `OFFSET` is an integer used to skip the first `OFFSET` of rows
     - `PAGE SIZE` is an integer used to get row `OFFSET` to row `OFFSET + PAGE SIZE`
 ```
-https://asia-southeast1-peer-preps-assignment6.cloudfunctions.net/ay2324s1-assessment6-g13-dev-getProblems?offset={OFFSET}&page-size={PAGE SIZE}
+https://asia-southeast1-peer-preps-assignment6.cloudfunctions.net/GetProblems?offset={OFFSET}&page-size={PAGE SIZE}
 ``` 
 
 ## How to develop locally?
