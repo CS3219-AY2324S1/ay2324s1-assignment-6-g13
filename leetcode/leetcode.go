@@ -7,12 +7,12 @@ import (
 )
 
 type Problem struct {
-	Difficulty string
-	QuestionId string
-	Title      string
-	TitleSlug  string
-	Content    string
-	Category   []string
+	Complexity  string   `json:"complexity"`
+	QuestionId  string   `json:"id"`
+	Title       string   `json:"title"`
+	TitleSlug   string   `json:"title-slug"`
+	Description string   `json:"description"`
+	Categories  []string `json:"categories"`
 }
 
 const LEETCODE_API_FAILURE_MESSAGE = "Failed to Connect to Leetcode API"
@@ -38,12 +38,12 @@ func GetAllProblemsWithContent(problemList []leetcodeapi.Problem) ([]Problem, st
 		categories := getCategories(topicTags)
 
 		problem := Problem{
-			Title:      value.Title,
-			TitleSlug:  value.TitleSlug,
-			Difficulty: value.Difficulty,
-			QuestionId: value.QuestionId,
-			Category:   categories,
-			Content:    content.Content,
+			Title:       value.Title,
+			TitleSlug:   value.TitleSlug,
+			Complexity:  value.Difficulty,
+			QuestionId:  value.QuestionId,
+			Categories:  categories,
+			Description: content.Content,
 		}
 		problems = append(problems, problem)
 	}
