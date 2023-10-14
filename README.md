@@ -23,4 +23,4 @@ https://asia-southeast1-peer-preps-assignment6.cloudfunctions.net/ay2324s1-asses
 ```
 FUNCTION_TARGET=GetProblems LOCAL_ONLY=true go run cmd/main.go
 ```
-3. Open your browser and go to `loca
+3. Open your browser and go to `localhost:8080?offset={OFFSET}&page-size={PAGE SIZE}
