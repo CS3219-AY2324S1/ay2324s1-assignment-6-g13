@@ -8,12 +8,12 @@ import (
 )
 
 type Problem struct {
-	Difficulty string
-	QuestionId string
-	Title      string
-	TitleSlug  string
-	Content    string
-	Category   []string
+	Complexity  string   `json:"complexity"`
+	QuestionId  string   `json:"id"`
+	Title       string   `json:"title"`
+	TitleSlug   string   `json:"title-slug"`
+	Description string   `json:"description"`
+	Categories  []string `json:"categories"`
 }
 
 const LEETCODE_API_FAILURE_MESSAGE = "Failed to Connect to Leetcode API"

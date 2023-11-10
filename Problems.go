@@ -47,6 +47,7 @@ func getProblems(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if err := encoder.Encode(response); err != nil {
 		http.Error(w, "Failed to write response", http.StatusInternalServerError)
 		return
