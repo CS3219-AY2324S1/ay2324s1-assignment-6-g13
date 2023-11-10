@@ -3,6 +3,7 @@ package leetcode
 import (
 	"net/http"
 
+	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/dustyRAIN/leetcode-api-go/leetcodeapi"
 )
 
@@ -16,6 +17,7 @@ type Problem struct {
 }
 
 const LEETCODE_API_FAILURE_MESSAGE = "Failed to Connect to Leetcode API"
+const MARKDOWN_PARSE_FAIL = "Failed to Parse Into Markdown"
 
 func GetAllProblems(offset int, pageSize int) (problems []leetcodeapi.Problem, total int, errorMessage string, httpStatusCode int) {
 	response, err := leetcodeapi.GetAllProblems(offset, pageSize)
@@ -33,6 +35,10 @@ func GetAllProblemsWithContent(problemList []leetcodeapi.Problem) ([]Problem, st
 		if err != nil {
 			return nil, LEETCODE_API_FAILURE_MESSAGE, http.StatusInternalServerError
 		}
+		markdownContent, err := convertHTMLtoMarkdown(content)
+		if err != nil {
+			return nil, MARKDOWN_PARSE_FAIL, http.StatusInternalServerError
+		}
 
 		topicTags := value.TopicTags
 		categories := getCategories(topicTags)
@@ -43,7 +49,7 @@ func GetAllProblemsWithContent(problemList []leetcodeapi.Problem) ([]Problem, st
 			Difficulty: value.Difficulty,
 			QuestionId: value.QuestionId,
 			Category:   categories,
-			Content:    content.Content,
+			Content:    markdownContent.Content,
 		}
 		problems = append(problems, problem)
 	}
@@ -56,4 +62,17 @@ func getCategories(topicTags []leetcodeapi.TopicTag) []string {
 		categories = append(categories, value.Name)
 	}
 	return categories
+}
+
+func convertHTMLtoMarkdown(content leetcodeapi.ProblemContent) (*leetcodeapi.ProblemContent, error) {
+	converter := md.NewConverter("", true, nil)
+	htmlContent := content.Content
+	markdownContent, err := converter.ConvertString(htmlContent)
+	if err != nil {
+		return nil, err
+	}
+	newContent := new(leetcodeapi.ProblemContent)
+	newContent.Content = markdownContent
+
+	return newContent, nil
 }

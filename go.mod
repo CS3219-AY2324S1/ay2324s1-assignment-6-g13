@@ -8,7 +8,14 @@ require (
 )
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
+	golang.org/x/net v0.14.0 // indirect
+)
+
+require (
 	cloud.google.com/go/functions v1.15.1 // indirect
+	github.com/JohannesKaufmann/html-to-markdown v1.4.1
 	github.com/cloudevents/sdk-go/v2 v2.14.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
