@@ -44,12 +44,12 @@ func GetAllProblemsWithContent(problemList []leetcodeapi.Problem) ([]Problem, st
 		categories := getCategories(topicTags)
 
 		problem := Problem{
-			Title:      value.Title,
-			TitleSlug:  value.TitleSlug,
-			Difficulty: value.Difficulty,
-			QuestionId: value.QuestionId,
-			Category:   categories,
-			Content:    markdownContent.Content,
+			Title:       value.Title,
+			TitleSlug:   value.TitleSlug,
+			Complexity:  value.Difficulty,
+			QuestionId:  value.QuestionId,
+			Categories:  categories,
+			Description: markdownContent.Content,
 		}
 		problems = append(problems, problem)
 	}
